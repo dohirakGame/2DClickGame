@@ -19,7 +19,7 @@ public class ItemData : ScriptableObject
     [SerializeField] private float weight;
 
 	[Header("Броня")]
-    [SerializeField] private int armor;
+    [SerializeField] private float armor;
 
 	[Header("Урон")]
 	[SerializeField] private float damage;
@@ -30,7 +30,7 @@ public class ItemData : ScriptableObject
     public int Id { get { return id; } }
     public int CountInStack { get { return countInStack; } }
     public float Weight { get { return weight; } } 
-    public int Armor { get { return armor; } }
+    public float Armor { get { return armor; } }
     public float Damage { get { return damage; } }
 }
 

@@ -16,8 +16,9 @@ public class InventoryData : MonoBehaviour
     [Header ("Все доступные ячейки")]
     public List<GameObject> slots;
 
-    [Header ("Различные листы для работы")]
-    public List<GameObject> freeslots;
-    public List<GameObject> occupiedSlots;
+    [Header("Различные листы для работы")]
+    public List<GameObject> ammoSlots;
+    public List<GameObject> freeSlots;
+    public List<GameObject> itemSlots;
     public List<GameObject> notFullStackSlots;
 }

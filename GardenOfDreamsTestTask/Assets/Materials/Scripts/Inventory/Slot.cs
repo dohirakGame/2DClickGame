@@ -6,6 +6,7 @@ public class Slot : MonoBehaviour
     [SerializeField] private bool _isFullStack;
     //[SerializeField] private bool _isOccupied;
 	[SerializeField] private bool _isClosed;
+	[SerializeField] private int _price;
 
 	private void Awake()
 	{
@@ -48,5 +49,14 @@ public class Slot : MonoBehaviour
 	public void SetClosedState(bool value)
 	{
 		_isClosed = value;
+	}
+
+	public int GetPrice()
+	{
+		return _price;
+	}
+	public void SetPrice(int price)
+	{
+		_price = price;
 	}
 }

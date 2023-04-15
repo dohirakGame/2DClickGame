@@ -27,11 +27,11 @@ public class InventoryController : MonoBehaviour
 			Slot slot = inventoryData.slots[i].GetComponent<Slot>();
 			if (slot.GetOpenState())
 			{
-				inventoryData.freeslots.Add(inventoryData.slots[i]);
+				inventoryData.freeSlots.Add(inventoryData.slots[i]);
 			}
 			else if (!slot.GetClosedState())
 			{
-				inventoryData.occupiedSlots.Add(inventoryData.slots[i]);
+				inventoryData.itemSlots.Add(inventoryData.slots[i]);
 				if (!slot.GetFullStackState())
 				{
 					inventoryData.notFullStackSlots.Add(inventoryData.slots[i]);
@@ -58,6 +58,7 @@ public class InventoryController : MonoBehaviour
 	{
 		inventoryData.slots[index].GetComponent<Slot>().SetOpenState(false);
 		inventoryData.slots[index].GetComponent<Slot>().SetClosedState(true);
+		inventoryData.slots[index].GetComponent<Slot>().SetPrice(inventoryData.priceForSlots[index]);
 
 		inventoryData.slots[index].GetComponentInChildren<TextMeshProUGUI>().text = inventoryData.priceForSlots[index].ToString() + "$";
 

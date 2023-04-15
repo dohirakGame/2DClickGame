@@ -19,9 +19,14 @@ public class PlayerData : MonoBehaviour, IPlayerData
         SetHeadArmor(15);
         SetBodyArmor(15);
         SetMoney(50);
+        UpdateHub();
+	}
+
+    public void UpdateHub()
+	{
         HubUpdater hub = FindObjectOfType<HubUpdater>();
         hub.UpdateHub();
-	}
+    }
 
 	public float GetHealth()
 	{
@@ -47,7 +52,7 @@ public class PlayerData : MonoBehaviour, IPlayerData
     {
         return _headArmor;
     }
-    public void SetHeadArmor(int value)
+    public void SetHeadArmor(float value)
     {
         _headArmor = value;
     }
@@ -57,7 +62,7 @@ public class PlayerData : MonoBehaviour, IPlayerData
     {
         return _bodyArmor;
     }
-    public void SetBodyArmor(int value)
+    public void SetBodyArmor(float value)
     {
         _bodyArmor = value;
     }

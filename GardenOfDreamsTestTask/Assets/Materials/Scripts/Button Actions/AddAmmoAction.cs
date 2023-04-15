@@ -1,92 +1,85 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class AddAmmoAction : MonoBehaviour
 {
-	private InventoryData inventoryData;
-	private GameObject itemPrefab;
+	private InventoryData _inventoryData;
+	private GameObject _itemPrefab;
 
 	public void ActionAddAmmo()
 	{
 		SetDataParameters();
-		OccupiedSlot();
+		AddAmmoItems();
 	}
 
 	private void SetDataParameters()
 	{
-		inventoryData = FindObjectOfType<InventoryData>();
-		itemPrefab = FindObjectOfType<ButtonAction>().prefab;
+		_inventoryData = FindObjectOfType<InventoryData>();
+		_itemPrefab = FindObjectOfType<ButtonAction>().prefab;
 	}
-	private void OccupiedSlot()
+	private void AddAmmoItems()
 	{
-		for (int i = 0; i < inventoryData.ammoItems.Count; i++)
+		for (int i = 0; i < _inventoryData.ammoItems.Count; i++)
 		{
-			if (inventoryData.freeslots.Count > 0)
-			{
-				int indexNotFullStack = 0;
-				InitAmmoItem(inventoryData.freeslots[0], i);
-				inventoryData.occupiedSlots.Add(inventoryData.freeslots[0]);
-				inventoryData.notFullStackSlots.Add(inventoryData.freeslots[0]);
-				inventoryData.freeslots.Remove(inventoryData.freeslots[0]);
-				for (int j = 0; j < inventoryData.ammoItems[i].CountInStack; j++)
-				{
-					indexNotFullStack = CheckNotFullStackIndex(i);
-					int currentCount = inventoryData.notFullStackSlots[indexNotFullStack].GetComponentInChildren<Item>().GetCount();
-					inventoryData.notFullStackSlots[indexNotFullStack].GetComponentInChildren<Item>().SetCount(currentCount + 1);
-				}
-			} 
-			else if (inventoryData.notFullStackSlots.Count > 0)
-			{
-				for (int j = 0; j < inventoryData.notFullStackSlots.Count; j++)
-				{
-					if (inventoryData.notFullStackSlots[j].GetComponentInChildren<Item>().GetItemType() == "Ammo")
-					{
-						for (int k = 0; k < inventoryData.ammoItems[i].CountInStack; k++)
-						{
-							if (inventoryData.notFullStackSlots[j].GetComponentInChildren<Item>().GetCount() < inventoryData.ammoItems[i].CountInStack)
-							{
-								int currentCount = inventoryData.notFullStackSlots[j].GetComponentInChildren<Item>().GetCount();
-								inventoryData.notFullStackSlots[j].GetComponentInChildren<Item>().SetCount(currentCount + 1);
-							}
-							else break;
-						}
-					}
-				}
-			}
+			CheckSlotsForIncrese(i);
 		}
 	}
-	
-	private int CheckNotFullStackIndex(int index)
+
+
+	private void CheckSlotsForIncrese(int index)
 	{
-		int notFullSlotIndex = 0;
-		for (int k = 0; k < inventoryData.notFullStackSlots.Count; k++)
+		if (_inventoryData.freeSlots.Count > 0)
 		{
-			if (inventoryData.notFullStackSlots[k].GetComponentInChildren<Item>().GetItemType() == "Ammo")
-			{
-				if (inventoryData.notFullStackSlots[k].GetComponentInChildren<Item>().GetCount() < inventoryData.ammoItems[index].CountInStack)
-				{
-					notFullSlotIndex = k;
-					break;
-				}
-				else
-				{
-					//InitAmmoItem(inventoryData.freeslots[0], index);
-					inventoryData.occupiedSlots.Add(inventoryData.freeslots[0]);
-					inventoryData.notFullStackSlots.Remove(inventoryData.notFullStackSlots[k]);
-				}
-			}
+			InitAmmoItem(_inventoryData.freeSlots[0], index);
+			UpdateElementsAndSetCount(index);
 		}
-		return notFullSlotIndex;
+		else if (_inventoryData.ammoSlots.Count > 0)
+		{
+			ReplenishmentAmmo(index);
+		}
 	}
+
+
 	private void InitAmmoItem(GameObject slot, int id)
 	{
 		Vector3 spawnPoint = new Vector3(slot.transform.position.x, slot.transform.position.y, slot.transform.position.z);
-		GameObject item = Instantiate(itemPrefab, spawnPoint, Quaternion.identity);
+		GameObject item = Instantiate(_itemPrefab, spawnPoint, Quaternion.identity);
 		item.transform.SetParent(slot.transform);
 
+		item.AddComponent<UIItem>();
+		item.AddComponent<CanvasGroup>();
 		item.AddComponent<Item>();
-		item.GetComponent<Item>().SetAmmoParameters(inventoryData.ammoItems, id);
+		item.GetComponent<Item>().SetAmmoParameters(_inventoryData.ammoItems, id);
+		item.GetComponent<Item>().UpdateParametersHubIncrease(_inventoryData.ammoItems, id);
+	}
+	private void UpdateElementsAndSetCount(int index)
+	{
+		_inventoryData.ammoSlots.Add(_inventoryData.freeSlots[0]);
+		_inventoryData.freeSlots.Remove(_inventoryData.freeSlots[0]);
+		_inventoryData.ammoSlots[_inventoryData.ammoSlots.Count - 1]
+			.GetComponentInChildren<Item>().SetCount(_inventoryData.ammoItems[index].CountInStack);
+	}
+
+
+	private void ReplenishmentAmmo(int index)
+	{
+		int countForIncrease = _inventoryData.ammoItems[index].CountInStack;
+		for (int j = 0; j < _inventoryData.ammoSlots.Count; j++)
+		{
+			if (_inventoryData.ammoSlots[j].GetComponentInChildren<Item>().GetId() == index + 1)
+			{
+				for (int k = 0; k < countForIncrease; countForIncrease--)
+				{
+					if (_inventoryData.ammoSlots[j].GetComponentInChildren<Item>().GetCount() < _inventoryData.ammoItems[index].CountInStack)
+					{
+						int currentCount = _inventoryData.ammoSlots[j].GetComponentInChildren<Item>().GetCount();
+						Item ammoItem = _inventoryData.ammoSlots[j].GetComponentInChildren<Item>();
+						ammoItem.SetCount(currentCount + 1);
+						ammoItem.UpdateAmmoParametersHubIncrease(_inventoryData.ammoItems, ammoItem.GetId());
+						ammoItem.UpdateItemUI();
+					}
+					else break;
+				}
+			}
+		}
 	}
 }
