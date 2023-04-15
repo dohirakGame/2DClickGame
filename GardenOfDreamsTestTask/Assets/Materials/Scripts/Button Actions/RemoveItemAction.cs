@@ -56,17 +56,14 @@ public class RemoveItemAction : MonoBehaviour
 
 		if (itemObject.GetItemType() == "Head")
 		{
-			Debug.Log("HER1");
 			itemObject.UpdateParametersHubDecrease(_inventoryData.headItems, itemObject.GetId());
 		} 
 		else if (itemObject.GetItemType() == "Body")
 		{
-			Debug.Log("HER2");
 			itemObject.UpdateParametersHubDecrease(_inventoryData.bodyItems, itemObject.GetId());
 		}
 		else if (itemObject.GetItemType() == "Gun")
 		{
-			Debug.Log("HER3");
 			itemObject.UpdateParametersHubDecrease(_inventoryData.gunItems, itemObject.GetId());
 		}
 
